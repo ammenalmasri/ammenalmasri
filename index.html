@@ -1,78 +1,61 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>أمين المصري | معرض الأعمال</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أمين المصري - معرض الأعمال</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<header class="hero">
-  <div class="hero-wrap container">
-    <div class="photo">
-      <img src="profile.jpg" alt="أمين المصري">
+    <!-- شريط التنقل -->
+    <nav class="navbar">
+        <ul>
+            <li><a href="#home">الرئيسية</a></li>
+            <li><a href="#about">نبذة عني</a></li>
+            <li><a href="#gallery">معرض الأعمال</a></li>
+            <li><a href="#contact">تواصل معي</a></li>
+        </ul>
+    </nav>
+
+    <!-- الرئيسية -->
+    <header id="home" class="header">
+        <img src="profile.jpg" alt="أمين المصري" class="profile-img">
+        <h1>أمين المصري</h1>
+        <p>مصوّر ومبدع في مجال الإنتاج الإعلامي والعلاقات العامة، بخبرة في التصوير الفوتوغرافي والفيديو، وتصميم الإعلانات، وإنتاج الفيديوهات، مع شغف لسرد القصص بصور وأعمال فنية عالية الجودة.</p>
+    </header>
+
+    <!-- نبذة عني -->
+    <section id="about" class="about">
+        <h2>نبذة عني</h2>
+        <p>
+            أنا أمين المصري، أمتلك خبرة واسعة في التصوير الفوتوغرافي وإنتاج الفيديو وتصميم الإعلانات. 
+            عملت على العديد من المشاريع الإبداعية التي جمعت بين الجمالية البصرية والرسالة المؤثرة، وأسعى دائمًا لتقديم أعمال تلهم المشاهد وتترك أثرًا إيجابيًا.
+        </p>
+    </section>
+
+    <!-- معرض الأعمال -->
+    <section id="gallery" class="gallery-section">
+        <h2>معرض الأعمال</h2>
+        <div id="gallery" class="gallery"></div>
+    </section>
+
+    <!-- عارض الفيديو -->
+    <div id="lightbox" class="lightbox hidden">
+        <span id="closeBtn" class="close-btn">&times;</span>
+        <div id="videoContainer" class="video-container"></div>
     </div>
-    <div class="intro">
-      <h1 class="reveal">أمين المصري</h1>
-      <p class="tagline reveal">مصور ومبدع محتوى بصري — أصنع صورًا وفيديوهات تحكي القصة وتُبرز التفاصيل باحترافية.</p>
-      <p class="bio reveal">
-        عملي وطموح وجريء، بخبرة في التصوير الفوتوغرافي والفيديو، تصميم الإعلانات، وإدارة الإنتاج الإعلامي.
-        شاركت في ورش وهيئات فنية، وأمتلك قدرة على تقديم المحتوى أمام الكاميرا وبناء قصص بصرية مؤثرة.
-      </p>
-    </div>
-  </div>
-  <div class="wave" aria-hidden="true">
-    <svg viewBox="0 0 1440 120" preserveAspectRatio="none"><path d="M0,80 C240,120 480,40 720,80 C960,120 1200,40 1440,80 L1440,120 L0,120 Z"/></svg>
-  </div>
-</header>
 
-<main class="container">
-  <section class="gallery-sec">
-    <h2 class="section-title">معرض الأعمال</h2>
-    <div id="gallery" class="gallery"></div>
-    <div id="status" class="status"></div>
-  </section>
-</main>
+    <!-- تواصل معي -->
+    <footer id="contact" class="footer">
+        <p>تواصل معي على:</p>
+        <div class="social-icons">
+            <a href="https://www.instagram.com/ameen_.almasri" target="_blank"><img src="instagram.svg" alt="Instagram"></a>
+            <a href="https://www.facebook.com/share/1CEbMfSBsT" target="_blank"><img src="facebook.svg" alt="Facebook"></a>
+            <a href="tel:+962792847709" class="phone">+962 79 284 7709</a>
+        </div>
+    </footer>
 
-<!-- Lightbox Player -->
-<div id="lightbox" class="lightbox" aria-hidden="true">
-  <button id="lbClose" class="lb-btn lb-close" aria-label="إغلاق">✕</button>
-  <button id="lbPrev" class="lb-btn lb-prev" aria-label="السابق">‹</button>
-  <button id="lbNext" class="lb-btn lb-next" aria-label="التالي">›</button>
-  <div class="lb-wrap">
-    <div id="player" class="player"></div>
-    <div class="caption"><span id="captionTitle">—</span></div>
-  </div>
-</div>
-
-<footer class="footer">
-  <div class="container footer-grid">
-    <div class="brand">© 2025 أمين المصري</div>
-    <div class="social">
-      <a href="https://www.instagram.com/ameen_.almasri" target="_blank" rel="noopener" aria-label="Instagram" class="icon">
-        <!-- Instagram SVG -->
-        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 2 .2 2.5.4.6.2 1 .4 1.5.9.5.5.7.9.9 1.5.2.5.3 1.3.4 2.5.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.2 2-.4 2.5-.2.6-.4 1-.9 1.5-.5.5-.9.7-1.5.9-.5.2-1.3.3-2.5.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-2-.2-2.5-.4-.6-.2-1-.4-1.5-.9-.5-.5-.7-.9-.9-1.5-.2-.5-.3-1.3-.4-2.5C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c.1-1.2.2-2 .4-2.5.2-.6.4-1 .9-1.5.5-.5.9-.7 1.5-.9.5-.2 1.3-.3 2.5-.4C8.4 2.2 8.8 2.2 12 2.2m0-2.2C8.7 0 8.3 0 7 0 5.7 0 4.8.1 4.1.3c-.8.3-1.5.6-2.2 1.3C1.2 2.3.9 3 .6 3.8.4 4.5.3 5.4.2 6.7.1 8 .1 8.4.1 12s0 4 .1 5.3c.1 1.3.2 2.2.4 2.9.3.8.6 1.5 1.3 2.2.7.7 1.4 1 2.2 1.3.7.2 1.6.3 2.9.4 1.3.1 1.7.1 5.3.1s4 0 5.3-.1c1.3-.1 2.2-.2 2.9-.4.8-.3 1.5-.6 2.2-1.3.7-.7 1-1.4 1.3-2.2.2-.7.3-1.6.4-2.9.1-1.3.1-1.7.1-5.3s0-4-.1-5.3c-.1-1.3-.2-2.2-.4-2.9-.3-.8-.6-1.5-1.3-2.2C21.6.9 20.9.6 20.1.3 19.4.1 18.5 0 17.2 0 15.9 0 15.5 0 12 0z"/><path d="M12 5.8A6.2 6.2 0 1 0 18.2 12 6.2 6.2 0 0 0 12 5.8zm0 10.2A4 4 0 1 1 16 12a4 4 0 0 1-4 4z"/><circle cx="18.4" cy="5.6" r="1.3"/></svg>
-      </a>
-      <a href="https://www.facebook.com/share/1CEbMfSBsT/?mibextid=LQQJ4d" target="_blank" rel="noopener" aria-label="Facebook" class="icon">
-        <!-- Facebook SVG -->
-        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7h-2.7V12h2.7V9.6c0-2.7 1.6-4.2 4-4.2 1.2 0 2.5.2 2.5.2v2.7h-1.4c-1.4 0-1.8.9-1.8 1.8V12h3l-.5 2.9h-2.5v7A10 10 0 0 0 22 12z" fill="currentColor"/></svg>
-      </a>
-      <a href="tel:+962792847709" class="icon phone" aria-label="اتصال">
-        <!-- Phone SVG -->
-        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.8-.4 1.2-.2 1 .3 2 .5 3 .5.7 0 1.2.5 1.2 1.2V20c0 .7-.5 1.2-1.2 1.2C9.5 21.2 2.8 14.5 2.8 6.2 2.8 5.5 3.3 5 4 5h3.3c.7 0 1.2.5 1.2 1.2 0 1 .2 2 .5 3 .1.4 0 .9-.3 1.2z" fill="currentColor"/></svg>
-        <span class="phone-text">+962 79 284 7709</span>
-      </a>
-    </div>
-  </div>
-</footer>
-
-<script>
-  window.DRIVE_CONFIG = {
-    FOLDER_ID: "1G174hSyhGDWpUCVaLyShGn1DtvwKehw3",
-    API_KEY: "AIzaSyAoSGkHZnJUPF1QX7or6mhLIhpNOkk-mig"
-  };
-</script>
-<script src="app.js" defer></script>
+    <script src="app.js"></script>
 </body>
 </html>
