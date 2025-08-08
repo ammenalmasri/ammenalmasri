@@ -1,67 +1,38 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>أمين المصري | معرض الفيديو</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أمين المصري - معرض الأعمال</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <header class="header">
+        <div class="profile-pic">
+            <img src="profile.jpg" alt="أمين المصري">
+        </div>
+        <h1>أمين المصري</h1>
+        <p class="bio">
+            مصوّر ومبدع في مجال الإنتاج الإعلامي والعلاقات العامة، بخبرة في التصوير الفوتوغرافي والفيديو،
+            وتصميم الإعلانات، وإنتاج الفيديوهات، مع شغف لسرد القصص بصور وأعمال فنية عالية الجودة.
+        </p>
+        <div class="social-links">
+            <a href="https://www.instagram.com/ameen_.almasri" target="_blank">انستغرام</a> |
+            <a href="https://www.facebook.com/share/1CEbMfSBsT/?mibextid=LQQJ4d" target="_blank">فيسبوك</a>
+        </div>
+    </header>
 
-<header class="site-header">
-  <h1>أمين المصري</h1>
-  <p class="sub">معرض فيديو بسيط وواضح</p>
-</header>
+    <main>
+        <section id="gallery" class="gallery">
+            <!-- سيتم تحميل الفيديوهات هنا -->
+        </section>
+    </main>
 
-<main>
-  <section class="toolbar">
-    <div class="filters" role="tablist" aria-label="تصنيفات">
-      <button class="filter active" data-cat="all">الكل</button>
-      <button class="filter" data-cat="ads">إعلانات</button>
-      <button class="filter" data-cat="wedding">أعراس</button>
-      <button class="filter" data-cat="motion">موشن</button>
-      <button class="filter" data-cat="bts">كواليس</button>
+    <div id="videoPlayer" class="video-player hidden">
+        <span id="closeBtn" class="close-btn">&times;</span>
+        <div id="videoContainer" class="video-container"></div>
     </div>
-    <div class="accent-picker">
-      <label>اللون:</label>
-      <select id="accentSelect">
-        <option value="#111111">أسود</option>
-        <option value="#7c3aed">بنفسجي</option>
-        <option value="#0ea5e9">سماوي</option>
-        <option value="#16a34a">أخضر</option>
-        <option value="#f59e0b">ذهبي</option>
-        <option value="#ef4444">أحمر</option>
-      </select>
-    </div>
-  </section>
 
-  <section id="gallery" class="gallery"></section>
-  <div id="status" class="status"></div>
-</main>
-
-<!-- Lightbox overlay (full screen) -->
-<div id="lightbox" class="lightbox" aria-hidden="true">
-  <button class="lb-btn lb-close" id="lbClose" aria-label="إغلاق">✕</button>
-  <button class="lb-btn lb-prev" id="lbPrev" aria-label="السابق">‹</button>
-  <button class="lb-btn lb-next" id="lbNext" aria-label="التالي">›</button>
-  <div class="lb-wrap">
-    <div class="player" id="player"></div>
-    <div class="caption"><span id="captionTitle">—</span></div>
-  </div>
-</div>
-
-<footer class="site-footer">
-  <a href="tel:+962792847709" class="call">📞 اتصال مباشر</a>
-  <a href="https://www.instagram.com/ameen_.almasri?igsh=MXFkNWFrMzI4Z2RmNQ==" target="_blank" rel="noopener">إنستغرام</a>
-  <a href="https://www.facebook.com/share/1CEbMfSBsT/?mibextid=LQQJ4d" target="_blank" rel="noopener">فيسبوك</a>
-</footer>
-
-<script>
-  window.DRIVE_CONFIG = {
-    FOLDER_ID: "1G174hSyhGDWpUCVaLyShGn1DtvwKehw3",
-    API_KEY: "AIzaSyAoSGkHZnJUPF1QX7or6mhLIhpNOkk-mig"
-  };
-</script>
-<script src="app.js" defer></script>
+    <script src="app.js"></script>
 </body>
 </html>
