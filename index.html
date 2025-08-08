@@ -3,65 +3,57 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>أمين المصري | معرض الأعمال</title>
-  <meta name="description" content="أمين المصري — مصوّر محترف. معرض أعمال فيديو احترافي.">
+  <title>أمين المصري | معرض الفيديو</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<header class="navbar">
-  <div class="brand">أمين المصري</div>
-  <nav class="links">
-    <a href="#about">نبذة</a>
-    <a href="#portfolio">الأعمال</a>
-    <a href="#contact">تواصل</a>
-  </nav>
+<header class="site-header">
+  <h1>أمين المصري</h1>
+  <p class="sub">معرض فيديو بسيط وواضح</p>
 </header>
 
-<section class="hero-gradient">
-  <div class="hero-content">
-    <h1>أمين المصري — مصوّر فوتوغرافي</h1>
-    <p>أصنع صورًا تحكي القصة، وفيديوهات تُشاهد بقلبك قبل عينك.</p>
-    <a href="#portfolio" class="btn primary">استكشف الأعمال</a>
-  </div>
-  <div class="wave-sep" aria-hidden="true">
-    <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
-      <path d="M0,80 C240,120 480,40 720,80 C960,120 1200,40 1440,80 L1440,120 L0,120 Z"></path>
-    </svg>
-  </div>
-</section>
+<main>
+  <section class="toolbar">
+    <div class="filters" role="tablist" aria-label="تصنيفات">
+      <button class="filter active" data-cat="all">الكل</button>
+      <button class="filter" data-cat="ads">إعلانات</button>
+      <button class="filter" data-cat="wedding">أعراس</button>
+      <button class="filter" data-cat="motion">موشن</button>
+      <button class="filter" data-cat="bts">كواليس</button>
+    </div>
+    <div class="accent-picker">
+      <label>اللون:</label>
+      <select id="accentSelect">
+        <option value="#111111">أسود</option>
+        <option value="#7c3aed">بنفسجي</option>
+        <option value="#0ea5e9">سماوي</option>
+        <option value="#16a34a">أخضر</option>
+        <option value="#f59e0b">ذهبي</option>
+        <option value="#ef4444">أحمر</option>
+      </select>
+    </div>
+  </section>
 
-<section id="about" class="section about">
-  <h2 class="section-title">نبذة قصيرة</h2>
-  <p class="lead">
-    مصوّر ومبدع محتوى بصري، بخبرة في التصوير الفوتوغرافي والفيديو والإنتاج الإعلامي.
-    أؤمن بأن كل لقطة تحمل روحًا ورسالة، وأعمل على تقديم تجربة بصرية متكاملة.
-  </p>
-</section>
+  <section id="gallery" class="gallery"></section>
+  <div id="status" class="status"></div>
+</main>
 
-<section id="portfolio" class="section portfolio">
-  <div class="section-head">
-    <h2 class="section-title">معرض الفيديو</h2>
-    <button id="refreshBtn" class="btn ghost" aria-label="تحديث المعرض" title="تحديث المعرض">
-      <span class="spinner" aria-hidden="true"></span> تحديث
-    </button>
+<!-- Lightbox overlay (full screen) -->
+<div id="lightbox" class="lightbox" aria-hidden="true">
+  <button class="lb-btn lb-close" id="lbClose" aria-label="إغلاق">✕</button>
+  <button class="lb-btn lb-prev" id="lbPrev" aria-label="السابق">‹</button>
+  <button class="lb-btn lb-next" id="lbNext" aria-label="التالي">›</button>
+  <div class="lb-wrap">
+    <div class="player" id="player"></div>
+    <div class="caption"><span id="captionTitle">—</span></div>
   </div>
-
-  <div class="grid" id="videoGrid"></div>
-  <div id="statusMsg" class="status"></div>
-</section>
-
-<section id="contact" class="section contact">
-  <h2 class="section-title">تواصل معي</h2>
-  <div class="contact-actions">
-    <a href="tel:+962792847709" class="btn call">📞 اتصال مباشر</a>
-    <a href="https://www.instagram.com/ameen_.almasri?igsh=MXFkNWFrMzI4Z2RmNQ==" target="_blank" rel="noopener" class="btn ig">إنستغرام</a>
-    <a href="https://www.facebook.com/share/1CEbMfSBsT/?mibextid=LQQJ4d" target="_blank" rel="noopener" class="btn fb">فيسبوك</a>
-  </div>
-</section>
+</div>
 
 <footer class="site-footer">
-  <small>© 2025 أمين المصري — كل الحقوق محفوظة</small>
+  <a href="tel:+962792847709" class="call">📞 اتصال مباشر</a>
+  <a href="https://www.instagram.com/ameen_.almasri?igsh=MXFkNWFrMzI4Z2RmNQ==" target="_blank" rel="noopener">إنستغرام</a>
+  <a href="https://www.facebook.com/share/1CEbMfSBsT/?mibextid=LQQJ4d" target="_blank" rel="noopener">فيسبوك</a>
 </footer>
 
 <script>
