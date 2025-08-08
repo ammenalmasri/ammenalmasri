@@ -5,10 +5,29 @@ const { FOLDER_ID, API_KEY } = window.DRIVE_CONFIG;
 const grid = document.getElementById('videoGrid');
 const statusMsg = document.getElementById('statusMsg');
 const refreshBtn = document.getElementById('refreshBtn');
+const fsVideo = document.getElementById('fsVideo');
 
-// حاوية ملء الشاشة
-const fsContainer = document.getElementById('fsContainer');
-const fsPlayer = document.getElementById('fsPlayer');
+// إظهار البطاقات بحركة لطيفة عند الظهور
+const revealObserver = new IntersectionObserver((entries) => {
+  for (const e of entries) {
+    if (e.isIntersecting) {
+      e.target.classList.add('revealed');
+      revealObserver.unobserve(e.target);
+    }
+  }
+}, { threshold: .1 });
+
+// تنظيف مشغل الـ Fullscreen عند الخروج
+function handleFsExit() {
+  const isFs = document.fullscreenElement || document.webkitFullscreenElement;
+  if (!isFs) {
+    fsVideo.pause();
+    fsVideo.removeAttribute('src');
+    fsVideo.style.display = 'none';
+  }
+}
+document.addEventListener('fullscreenchange', handleFsExit);
+document.addEventListener('webkitfullscreenchange', handleFsExit);
 
 // أدوات
 function trimExt(name) {
@@ -41,6 +60,22 @@ async function listAllVideos() {
   return all;
 }
 
+// تشغيل الفيديو بوضع ملء الشاشة باستخدام رابط alt=media (أنسب للآيفون)
+function playFullscreen(file) {
+  const directUrl = `https://www.googleapis.com/drive/v3/files/${file.id}?alt=media&key=${API_KEY}`;
+  fsVideo.src = directUrl;
+  fsVideo.style.display = 'block';
+  // تشغيل ثم طلب ملء الشاشة داخل حدث المستخدم
+  fsVideo.play().then(async () => {
+    try {
+      if (fsVideo.requestFullscreen) await fsVideo.requestFullscreen();
+      else if (fsVideo.webkitRequestFullscreen) await fsVideo.webkitRequestFullscreen();
+    } catch (e) {
+      console.warn('تعذّر الدخول لملء الشاشة:', e);
+    }
+  }).catch(err => console.error('تعذر تشغيل الفيديو:', err));
+}
+
 // بناء الشبكة
 function renderGrid(files) {
   grid.innerHTML = '';
@@ -61,44 +96,14 @@ function renderGrid(files) {
         <small>${dateTxt}</small>
       </div>
     `;
-    // تشغيل بوضع ملء الشاشة عند النقر
+    // تشغيل ملء الشاشة مباشرة على النقرة (متوافق مع iOS)
     card.addEventListener('click', () => playFullscreen(f));
     grid.appendChild(card);
+    revealObserver.observe(card);
   }
 }
 
-// تشغيل ملء الشاشة
-async function playFullscreen(file) {
-  const previewUrl = `https://drive.google.com/file/d/${file.id}/preview`;
-  fsPlayer.src = previewUrl;
-
-  // طلب ملء الشاشة على الحاوية (أفضل توافقاً)
-  try {
-    if (fsContainer.requestFullscreen) {
-      await fsContainer.requestFullscreen();
-    } else if (fsContainer.webkitRequestFullscreen) {
-      await fsContainer.webkitRequestFullscreen();
-    } else if (fsPlayer.requestFullscreen) {
-      await fsPlayer.requestFullscreen();
-    }
-  } catch (e) {
-    // بعض المتصفحات قد ترفض الطلب؛ في هذه الحالة سيبقى iframe ضمن الصفحة
-    console.warn('لم ينجح الدخول لملء الشاشة:', e);
-  }
-}
-
-// تنظيف عند الخروج من وضع ملء الشاشة
-function onFsChange() {
-  const isFs = document.fullscreenElement || document.webkitFullscreenElement;
-  if (!isFs) {
-    // تم الخروج من ملء الشاشة — ننظف المصدر لإيقاف التشغيل
-    fsPlayer.src = '';
-  }
-}
-document.addEventListener('fullscreenchange', onFsChange);
-document.addEventListener('webkitfullscreenchange', onFsChange);
-
-// تحديث
+// تحديث المعرض
 async function refresh() {
   statusMsg.textContent = 'جاري التحميل...';
   try {
