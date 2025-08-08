@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أمين المصري | مصوّر فوتوغرافي</title>
+    <meta name="description" content="شغف بالتصوير وصناعة المحتوى، وخبرة في الإعلام والإنتاج المرئي، أروي الحكاية بعدستي.">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header>
+    <div class="logo">أمين المصري</div>
+</header>
+
+<section class="hero" style="background-image: url('IMG_8129.PNG');">
+    <div class="hero-content">
+        <h1>أمين المصري — مصوّر فوتوغرافي</h1>
+        <p>شغف بالتصوير وصناعة المحتوى، وخبرة في الإعلام والإنتاج المرئي، أروي الحكاية بعدستي.</p>
+        <a href="#portfolio" class="btn">شاهد الأعمال</a>
+    </div>
+</section>
+
+<section class="about">
+    <h2>نبذة عني</h2>
+    <p>
+        أنا شخص عملي وطموح وجريء، شغوف بالعلاقات العامة وصناعة المحتوى والإنتاج الإعلامي.
+        لدي خبرة في التصوير الفوتوغرافي والفيديو، تصميم الإعلانات، وإدارة الفعاليات، مع قدرة على العمل
+        المكتبي والميداني والرقمي. أمتلك مهارات في التقديم أمام الجمهور وصناعة القصص البصرية التي
+        تترك أثراً.
+    </p>
+</section>
+
+<!-- مشغل الفيديو داخل الصفحة (مخفي بالبداية) -->
+<section id="playerSection" class="player-section" aria-label="مشغل الفيديو" style="display:none">
+  <div class="player-wrap">
+    <h3 id="playerTitle" class="player-title"></h3>
+    <div class="player-frame">
+      <iframe id="drivePlayer" allow="autoplay" allowfullscreen></iframe>
+    </div>
+  </div>
+</section>
+
+<section class="portfolio" id="portfolio">
+    <div class="portfolio-head">
+        <h2>معرض الأعمال</h2>
+        <button id="refreshBtn" class="btn btn-ghost" aria-label="تحديث المعرض">تحديث المعرض</button>
+    </div>
+    <div class="grid" id="videoGrid"></div>
+    <div id="statusMsg" class="status"></div>
+</section>
+
+<footer>
+    <p>تواصل معي</p>
+    <div class="social-icons">
+        <a href="https://www.instagram.com/ameen_.almasri?igsh=MXFkNWFrMzI4Z2RmNQ==" target="_blank" rel="noopener">📷 إنستغرام</a>
+        <a href="https://www.facebook.com/share/1CEbMfSBsT/?mibextid=LQQJ4d" target="_blank" rel="noopener">📘 فيسبوك</a>
+    </div>
+</footer>
+
+
+<script>
+  window.DRIVE_CONFIG = {
+    FOLDER_ID: "1G174hSyhGDWpUCVaLyShGn1DtvwKehw3",
+    API_KEY: "AIzaSyAoSGkHZnJUPF1QX7or6mhLIhpNOkk-mig"
+  };
+</script>
+
+<script src="app.js" defer></script>
+</body>
+</html>
