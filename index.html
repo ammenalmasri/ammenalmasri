@@ -41,28 +41,36 @@
   <div class="portfolio-head">
     <h2 class="section-title">معرض الأعمال</h2>
     <button id="refreshBtn" class="btn ghost" aria-label="تحديث المعرض" title="تحديث المعرض">
-      <span class="spinner" aria-hidden="true"></span>
-      تحديث
+      <span class="spinner" aria-hidden="true"></span> تحديث
     </button>
   </div>
+
+  <!-- مشغّل سريع داخل الصفحة (مخفي افتراضيًا) -->
+  <div id="inlinePlayer" class="inline-player" hidden>
+    <div class="player-bar">
+      <div id="nowTitle" class="now-title">—</div>
+      <button id="closePlayer" class="close-btn" aria-label="إغلاق المشغّل">✕</button>
+    </div>
+    <div class="player-wrap">
+      <video id="videoEl" controls playsinline webkit-playsinline preload="metadata"></video>
+      <div id="videoLoader" class="loader" hidden></div>
+      <div id="videoError" class="error" hidden>تعذّر تشغيل الفيديو. جرّب فيديو آخر.</div>
+    </div>
+  </div>
+
   <div class="grid" id="videoGrid"></div>
   <div id="statusMsg" class="status"></div>
 </section>
 
-<!-- مشغل فيديو كامل الشاشة (مخفي ويظهر فقط أثناء التشغيل) -->
-<video id="fsVideo" class="fs-video" controls playsinline></video>
-
-
 <footer id="contact" class="site-footer">
   <p>تواصل معي</p>
   <div class="social">
+    <a href="tel:+962792847709" aria-label="اتصال">📞 اتصل بي</a>
     <a href="https://www.instagram.com/ameen_.almasri?igsh=MXFkNWFrMzI4Z2RmNQ==" target="_blank" rel="noopener" aria-label="Instagram">إنستغرام</a>
     <a href="https://www.facebook.com/share/1CEbMfSBsT/?mibextid=LQQJ4d" target="_blank" rel="noopener" aria-label="Facebook">فيسبوك</a>
-    <a href="tel:+962792847709" aria-label="اتصال">📞 اتصل بي</a>
   </div>
   <small class="copyright">© 2025 أمين المصري</small>
 </footer>
-
 
 <script>
   window.DRIVE_CONFIG = {
