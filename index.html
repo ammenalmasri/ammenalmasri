@@ -45,19 +45,6 @@
     </button>
   </div>
 
-  <!-- مشغّل سريع داخل الصفحة (مخفي افتراضيًا) -->
-  <div id="inlinePlayer" class="inline-player" hidden>
-    <div class="player-bar">
-      <div id="nowTitle" class="now-title">—</div>
-      <button id="closePlayer" class="close-btn" aria-label="إغلاق المشغّل">✕</button>
-    </div>
-    <div class="player-wrap">
-      <video id="videoEl" controls playsinline webkit-playsinline preload="metadata"></video>
-      <div id="videoLoader" class="loader" hidden></div>
-      <div id="videoError" class="error" hidden>تعذّر تشغيل الفيديو. جرّب فيديو آخر.</div>
-    </div>
-  </div>
-
   <div class="grid" id="videoGrid"></div>
   <div id="statusMsg" class="status"></div>
 </section>

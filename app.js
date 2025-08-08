@@ -6,13 +6,7 @@ const grid = document.getElementById('videoGrid');
 const statusMsg = document.getElementById('statusMsg');
 const refreshBtn = document.getElementById('refreshBtn');
 
-// Inline video player (hidden by default)
-const inlinePlayer = document.getElementById('inlinePlayer');
-const videoEl = document.getElementById('videoEl');
-const nowTitle = document.getElementById('nowTitle');
-const closePlayer = document.getElementById('closePlayer');
-const videoLoader = document.getElementById('videoLoader');
-const videoError = document.getElementById('videoError');
+let currentExpander = null;
 
 // Reveal cards animation
 const revealObserver = new IntersectionObserver((entries) => {
@@ -23,38 +17,6 @@ const revealObserver = new IntersectionObserver((entries) => {
     }
   }
 }, { threshold: .1 });
-
-// Clean up player
-function hidePlayer(){
-  videoEl.pause();
-  videoEl.removeAttribute('src');
-  inlinePlayer.hidden = true;
-}
-
-// Handle errors
-function onVideoError(){
-  videoLoader.hidden = true;
-  videoError.hidden = false;
-}
-
-// Play inline with better performance on mobile
-function playInline(file){
-  const directUrl = `https://www.googleapis.com/drive/v3/files/${file.id}?alt=media&key=${API_KEY}`;
-  nowTitle.textContent = trimExt(file.name);
-  videoError.hidden = true;
-  inlinePlayer.hidden = false;
-  videoLoader.hidden = false;
-  videoEl.src = directUrl;
-  // iOS performance tips
-  videoEl.setAttribute('playsinline', '');
-  videoEl.setAttribute('webkit-playsinline', '');
-  videoEl.load();
-  videoEl.play().catch(()=>{});
-
-  // hide loader when can play
-  const onCanPlay = () => { videoLoader.hidden = true; videoEl.removeEventListener('canplay', onCanPlay); };
-  videoEl.addEventListener('canplay', onCanPlay, { once:true });
-}
 
 // Tools
 function trimExt(name){ const i = name.lastIndexOf('.'); return i>0 ? name.slice(0,i) : name; }
@@ -71,7 +33,6 @@ async function listAllVideos(){
     url.searchParams.set('orderBy', 'modifiedTime desc');
     if(pageToken) url.searchParams.set('pageToken', pageToken);
     url.searchParams.set('key', API_KEY);
-
     const res = await fetch(url.toString());
     if(!res.ok) throw new Error('فشل الاتصال بخدمة Google Drive');
     const data = await res.json();
@@ -80,6 +41,50 @@ async function listAllVideos(){
     pageToken = data.nextPageToken;
   }
   return all;
+}
+
+// Inline expander
+function openExpander(file, afterNode){
+  // Close previous expander
+  if(currentExpander){
+    const v = currentExpander.querySelector('video');
+    if(v){ v.pause(); v.removeAttribute('src'); }
+    currentExpander.remove();
+    currentExpander = null;
+  }
+  const exp = document.createElement('div');
+  exp.className = 'expander';
+  exp.innerHTML = `
+    <div class="bar">
+      <div class="title">${trimExt(file.name)}</div>
+      <button class="close" aria-label="إغلاق">✕</button>
+    </div>
+    <div class="wrap">
+      <video controls playsinline webkit-playsinline preload="metadata"></video>
+      <div class="loader"></div>
+    </div>
+  `;
+  // insert after the clicked card
+  afterNode.insertAdjacentElement('afterend', exp);
+  currentExpander = exp;
+
+  const video = exp.querySelector('video');
+  const loader = exp.querySelector('.loader');
+  const closeBtn = exp.querySelector('.close');
+
+  const directUrl = `https://www.googleapis.com/drive/v3/files/${file.id}?alt=media&key=${API_KEY}`;
+  video.src = directUrl;
+  video.addEventListener('canplay', () => loader.remove(), { once:true });
+  video.play().catch(()=>{});
+
+  closeBtn.addEventListener('click', () => {
+    video.pause(); video.removeAttribute('src');
+    exp.remove(); currentExpander = null;
+    afterNode.scrollIntoView({behavior:'smooth', block:'center'});
+  });
+
+  // Ensure the expander spans full width and scroll into view
+  exp.scrollIntoView({behavior:'smooth', block:'center'});
 }
 
 // Build grid
@@ -100,7 +105,7 @@ function renderGrid(files){
         <small>${dateTxt}</small>
       </div>
     `;
-    card.addEventListener('click', () => playInline(f));
+    card.addEventListener('click', () => openExpander(f, card));
     grid.appendChild(card);
     revealObserver.observe(card);
   }
@@ -118,9 +123,6 @@ async function refresh(){
     console.error(err);
   }
 }
-
-closePlayer.addEventListener('click', hidePlayer);
-videoEl.addEventListener('error', onVideoError);
 
 refreshBtn.addEventListener('click', refresh);
 refresh();
