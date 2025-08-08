@@ -1,87 +1,151 @@
-// إعدادات Google Drive
-const FOLDER_ID = "1G174hSyhGDWpUCVaLyShGn1DtvwKehw3";
-const API_KEY = "AIzaSyAoSGkHZnJUPF1QX7or6mhLIhpNOkk-mig";
+// Drive config
+const { FOLDER_ID, API_KEY } = window.DRIVE_CONFIG;
 
-const gallery = document.getElementById("gallery");
-const videoPlayer = document.getElementById("videoPlayer");
-const videoContainer = document.getElementById("videoContainer");
-const closeBtn = document.getElementById("closeBtn");
-const fullscreenBtn = document.getElementById("fullscreenBtn");
+// DOM
+const grid = document.getElementById('videoGrid');
+const statusMsg = document.getElementById('statusMsg');
+const refreshBtn = document.getElementById('refreshBtn');
 
-// كشف iOS
-function isIOS() {
-  return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-}
+let currentExpander = null;
 
-// جلب الفيديوهات
-async function fetchVideos() {
+// Utils
+const isIOS = () => /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+const trimExt = (name) => { const i = name.lastIndexOf('.'); return i>0 ? name.slice(0,i) : name; };
+const fmtDate = (iso) => new Date(iso).toLocaleDateString('ar-JO', { year:'numeric', month:'long', day:'numeric' });
+
+// Reveal animation for cards
+const revealObserver = new IntersectionObserver((entries)=>{
+  for(const e of entries){ if(e.isIntersecting){ e.target.classList.add('revealed'); revealObserver.unobserve(e.target); } }
+},{threshold:.1});
+
+// Fetch videos
+async function listVideos(){
+  let pageToken, all=[];
   const q = `'${FOLDER_ID}' in parents and mimeType contains 'video/' and trashed=false`;
-  const url = new URL('https://www.googleapis.com/drive/v3/files');
-  url.searchParams.set('q', q);
-  url.searchParams.set('fields', 'files(id,name,mimeType,thumbnailLink),nextPageToken');
-  url.searchParams.set('orderBy', 'modifiedTime desc');
-  url.searchParams.set('key', API_KEY);
+  const fields = 'files(id,name,mimeType,modifiedTime,thumbnailLink),nextPageToken';
+  while(true){
+    const url = new URL('https://www.googleapis.com/drive/v3/files');
+    url.searchParams.set('q', q);
+    url.searchParams.set('fields', fields);
+    url.searchParams.set('orderBy', 'modifiedTime desc');
+    if(pageToken) url.searchParams.set('pageToken', pageToken);
+    url.searchParams.set('key', API_KEY);
 
-  const res = await fetch(url.toString());
-  if (!res.ok) {
-    console.error('Drive API error', await res.text());
-    return;
+    const res = await fetch(url.toString());
+    if(!res.ok) throw new Error('Drive API error');
+    const data = await res.json();
+    all = all.concat(data.files || []);
+    if(!data.nextPageToken) break;
+    pageToken = data.nextPageToken;
   }
-  const data = await res.json();
-  (data.files || []).forEach(file => addThumb(file));
+  return all;
 }
 
-function addThumb(file) {
-  const thumbUrl = file.thumbnailLink || `https://drive.google.com/thumbnail?id=${file.id}`;
-  const div = document.createElement("div");
-  div.className = "video-thumb";
-  div.innerHTML = `<img src="${thumbUrl}" alt="${file.name}" loading="lazy">`;
-  div.addEventListener("click", () => play(file));
-  gallery.appendChild(div);
+// Build card
+function makeCard(file){
+  const card = document.createElement('div');
+  card.className = 'card';
+  const thumb = file.thumbnailLink || `https://drive.google.com/thumbnail?id=${file.id}`;
+  const title = trimExt(file.name);
+  const dateTxt = fmtDate(file.modifiedTime);
+  card.innerHTML = `
+    <img class="thumb" src="${thumb}" alt="${title}" loading="lazy">
+    <div class="meta">
+      <div class="title" title="${title}">${title}</div>
+      <div class="date">${dateTxt}</div>
+    </div>
+  `;
+  card.addEventListener('click', () => openExpander(file, card));
+  revealObserver.observe(card);
+  return card;
 }
 
-// تشغيل الفيديو
-function play(file) {
-  videoPlayer.classList.remove("hidden");
-  videoContainer.innerHTML = ""; // تفريغ
-  // iOS: استخدم preview داخل iframe
-  if (isIOS()) {
-    const iframe = document.createElement("iframe");
+// Open inline player expander
+function openExpander(file, afterNode){
+  // close previous
+  if(currentExpander){
+    currentExpander.querySelector('video')?.pause();
+    currentExpander.remove();
+    currentExpander = null;
+  }
+  const exp = document.createElement('div');
+  exp.className = 'expander';
+  exp.innerHTML = `
+    <div class="player-bar">
+      <div class="player-title" title="${trimExt(file.name)}">${trimExt(file.name)}</div>
+      <div class="player-actions">
+        <button class="icon-btn fs-btn" title="ملء الشاشة">📺</button>
+        <button class="icon-btn close-btn" title="إغلاق">✕</button>
+      </div>
+    </div>
+    <div class="player-wrap">
+      <div class="loader"></div>
+    </div>
+  `;
+  afterNode.insertAdjacentElement('afterend', exp);
+  currentExpander = exp;
+  exp.scrollIntoView({behavior:'smooth', block:'center'});
+
+  const wrap = exp.querySelector('.player-wrap');
+  const loader = exp.querySelector('.loader');
+  const fsBtn = exp.querySelector('.fs-btn');
+  const closeBtn = exp.querySelector('.close-btn');
+
+  if(isIOS()){
+    // iOS -> use preview iframe
+    const iframe = document.createElement('iframe');
     iframe.src = `https://drive.google.com/file/d/${file.id}/preview`;
     iframe.allow = "autoplay; fullscreen";
-    iframe.setAttribute("allowfullscreen", "");
-    iframe.setAttribute("webkitallowfullscreen", "");
-    iframe.setAttribute("mozallowfullscreen", "");
-    videoContainer.appendChild(iframe);
-    fullscreenBtn.style.display = "none"; // iframe ما يدعم طلب fullscreen موحد
-  } else {
-    const video = document.createElement("video");
+    iframe.setAttribute('allowfullscreen','');
+    wrap.appendChild(iframe);
+    loader.remove();
+    // fullscreen not consistent for iframe on iOS; hide the button
+    fsBtn.style.display = 'none';
+  }else{
+    // Other devices -> HTML5 video with direct media
+    const video = document.createElement('video');
     video.src = `https://www.googleapis.com/drive/v3/files/${file.id}?alt=media&key=${API_KEY}`;
     video.controls = true;
     video.playsInline = true;
-    video.setAttribute("webkit-playsinline", "true");
-    video.preload = "metadata";
-    videoContainer.appendChild(video);
-    fullscreenBtn.style.display = "inline-block";
-    // تشغيل اختياري: المستخدم يضغط Play من الكنترولز
+    video.setAttribute('webkit-playsinline','');
+    video.preload = 'metadata';
+    wrap.appendChild(video);
+    video.addEventListener('canplay', ()=> loader.remove(), { once:true });
+    // Do not auto-play to respect user; they can press Play
+    fsBtn.addEventListener('click', () => {
+      if(video.requestFullscreen) video.requestFullscreen();
+      else if(video.webkitEnterFullscreen) video.webkitEnterFullscreen();
+    });
   }
 
-  // تمرير للمشغل
-  videoPlayer.scrollIntoView({ behavior: "smooth", block: "start" });
+  closeBtn.addEventListener('click', () => {
+    exp.querySelector('video')?.pause();
+    exp.remove();
+    currentExpander = null;
+    afterNode.scrollIntoView({behavior:'smooth', block:'center'});
+  });
 }
 
-// إغلاق المشغل
-closeBtn.addEventListener("click", () => {
-  videoContainer.innerHTML = "";
-  videoPlayer.classList.add("hidden");
-});
+// Render grid
+function render(files){
+  grid.innerHTML='';
+  if(!files.length){ statusMsg.textContent = 'لا توجد فيديوهات حالياً.'; return; }
+  statusMsg.textContent='';
+  for(const f of files) grid.appendChild(makeCard(f));
+}
 
-// ملء الشاشة
-fullscreenBtn.addEventListener("click", () => {
-  const video = videoContainer.querySelector("video");
-  if (!video) return;
-  if (video.requestFullscreen) video.requestFullscreen();
-  else if (video.webkitEnterFullscreen) video.webkitEnterFullscreen();
-});
+// Refresh
+async function refresh(){
+  statusMsg.textContent = 'جاري تحميل الفيديوهات...';
+  try{
+    const files = await listVideos();
+    render(files);
+    statusMsg.textContent = '';
+  }catch(e){
+    console.error(e);
+    statusMsg.textContent = 'تعذر تحميل المعرض. تأكد من صلاحيات المجلد و الـ API Key.';
+  }
+}
 
-fetchVideos();
+refreshBtn.addEventListener('click', refresh);
+refresh();

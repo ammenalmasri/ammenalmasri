@@ -1,42 +1,75 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>أمين المصري - معرض الأعمال</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>أمين المصري | معرض الأعمال</title>
+  <meta name="description" content="أمين المصري — مصوّر محترف. معرض أعمال فيديو احترافي.">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<header class="hero">
-    <img src="IMG_8129.PNG" alt="أمين المصري" class="profile-pic">
-    <h1>أمين المصري</h1>
-    <p class="bio">مصور محترف يتمتع بخبرة واسعة في التصوير الفوتوغرافي والفيديو، ملتزم بإبداع صور تحكي قصة وتوثق اللحظات بأعلى جودة ممكنة.</p>
+<header class="navbar">
+  <div class="brand">أمين المصري</div>
+  <nav class="links">
+    <a href="#about">نبذة</a>
+    <a href="#portfolio">الأعمال</a>
+    <a href="#contact">تواصل</a>
+  </nav>
 </header>
 
-<main>
-    <section id="gallery" class="gallery"></section>
-</main>
+<section class="hero-gradient">
+  <div class="hero-content">
+    <h1>أمين المصري — مصوّر فوتوغرافي</h1>
+    <p>أصنع صورًا تحكي القصة، وفيديوهات تُشاهد بقلبك قبل عينك.</p>
+    <a href="#portfolio" class="btn primary">استكشف الأعمال</a>
+  </div>
+  <div class="wave-sep" aria-hidden="true">
+    <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
+      <path d="M0,80 C240,120 480,40 720,80 C960,120 1200,40 1440,80 L1440,120 L0,120 Z"></path>
+    </svg>
+  </div>
+</section>
 
-<!-- مشغل الفيديو -->
-<div id="videoPlayer" class="video-player hidden">
-    <div class="video-header">
-        <button id="closeBtn" aria-label="إغلاق">✕</button>
-        <button id="fullscreenBtn" aria-label="ملء الشاشة">📺</button>
-    </div>
-    <div id="videoContainer" class="video-container fade-in"></div>
-</div>
+<section id="about" class="section about">
+  <h2 class="section-title">نبذة قصيرة</h2>
+  <p class="lead">
+    مصوّر ومبدع محتوى بصري، بخبرة في التصوير الفوتوغرافي والفيديو والإنتاج الإعلامي.
+    أؤمن بأن كل لقطة تحمل روحًا ورسالة، وأعمل على تقديم تجربة بصرية متكاملة.
+  </p>
+</section>
+
+<section id="portfolio" class="section portfolio">
+  <div class="section-head">
+    <h2 class="section-title">معرض الفيديو</h2>
+    <button id="refreshBtn" class="btn ghost" aria-label="تحديث المعرض" title="تحديث المعرض">
+      <span class="spinner" aria-hidden="true"></span> تحديث
+    </button>
+  </div>
+
+  <div class="grid" id="videoGrid"></div>
+  <div id="statusMsg" class="status"></div>
+</section>
+
+<section id="contact" class="section contact">
+  <h2 class="section-title">تواصل معي</h2>
+  <div class="contact-actions">
+    <a href="tel:+962792847709" class="btn call">📞 اتصال مباشر</a>
+    <a href="https://www.instagram.com/ameen_.almasri?igsh=MXFkNWFrMzI4Z2RmNQ==" target="_blank" rel="noopener" class="btn ig">إنستغرام</a>
+    <a href="https://www.facebook.com/share/1CEbMfSBsT/?mibextid=LQQJ4d" target="_blank" rel="noopener" class="btn fb">فيسبوك</a>
+  </div>
+</section>
 
 <footer class="site-footer">
-    <p>تواصل معي</p>
-    <div class="social">
-        <a href="https://www.instagram.com/ameen_.almasri?igsh=MXFkNWFrMzI4Z2RmNQ==" target="_blank" rel="noopener">إنستغرام</a>
-        <a href="https://www.facebook.com/share/1CEbMfSBsT/?mibextid=LQQJ4d" target="_blank" rel="noopener">فيسبوك</a>
-        <a href="tel:+962792847709">📞 اتصل بي</a>
-    </div>
-    <small>© 2025 أمين المصري</small>
+  <small>© 2025 أمين المصري — كل الحقوق محفوظة</small>
 </footer>
 
-<script src="app.js"></script>
+<script>
+  window.DRIVE_CONFIG = {
+    FOLDER_ID: "1G174hSyhGDWpUCVaLyShGn1DtvwKehw3",
+    API_KEY: "AIzaSyAoSGkHZnJUPF1QX7or6mhLIhpNOkk-mig"
+  };
+</script>
+<script src="app.js" defer></script>
 </body>
 </html>
