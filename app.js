@@ -1,25 +1,24 @@
-// جلب إعدادات Google Drive
+// إعدادات Google Drive
 const { FOLDER_ID, API_KEY } = window.DRIVE_CONFIG;
 
-// عناصر DOM
+// DOM
 const grid = document.getElementById('videoGrid');
 const statusMsg = document.getElementById('statusMsg');
 const refreshBtn = document.getElementById('refreshBtn');
 
-// مشغل داخل الصفحة (مخفي بالبداية)
-const playerSection = document.getElementById('playerSection');
-const playerTitle = document.getElementById('playerTitle');
-const drivePlayer = document.getElementById('drivePlayer');
+// حاوية ملء الشاشة
+const fsContainer = document.getElementById('fsContainer');
+const fsPlayer = document.getElementById('fsPlayer');
 
-// أداة لإزالة الامتداد من الاسم
+// أدوات
 function trimExt(name) {
   const i = name.lastIndexOf('.');
   return i > 0 ? name.slice(0, i) : name;
 }
 
-// استدعاء Drive API مع التعامل مع الصفحات
+// جلب الفيديوهات من Drive
 async function listAllVideos() {
-  let pageToken = undefined;
+  let pageToken;
   let all = [];
   const q = `'${FOLDER_ID}' in parents and mimeType contains 'video/' and trashed=false`;
   const fields = 'files(id,name,mimeType,modifiedTime,thumbnailLink),nextPageToken';
@@ -33,24 +32,21 @@ async function listAllVideos() {
     url.searchParams.set('key', API_KEY);
 
     const res = await fetch(url.toString());
-    if (!res.ok) throw new Error('فشل الاتصال بواجهات Google Drive');
+    if (!res.ok) throw new Error('فشل الاتصال بخدمة Google Drive');
     const data = await res.json();
     all = all.concat(data.files || []);
     if (!data.nextPageToken) break;
     pageToken = data.nextPageToken;
   }
-
   return all;
 }
 
 // بناء الشبكة
 function renderGrid(files) {
   grid.innerHTML = '';
-  if (!files.length) {
-    statusMsg.textContent = 'لا توجد فيديوهات حالياً.';
-    return;
-  }
+  if (!files.length) { statusMsg.textContent = 'لا توجد فيديوهات حالياً.'; return; }
   statusMsg.textContent = '';
+
   for (const f of files) {
     const card = document.createElement('div');
     card.className = 'card';
@@ -65,24 +61,44 @@ function renderGrid(files) {
         <small>${dateTxt}</small>
       </div>
     `;
-    card.addEventListener('click', () => playInline(f));
+    // تشغيل بوضع ملء الشاشة عند النقر
+    card.addEventListener('click', () => playFullscreen(f));
     grid.appendChild(card);
   }
 }
 
-// تشغيل داخل الصفحة (بدون تشغيل تلقائي عند فتح الموقع)
-function playInline(file) {
+// تشغيل ملء الشاشة
+async function playFullscreen(file) {
   const previewUrl = `https://drive.google.com/file/d/${file.id}/preview`;
-  playerTitle.textContent = trimExt(file.name);
-  drivePlayer.src = previewUrl; // لا نضيف autoplay => المستخدم هو من بدأ التشغيل
-  if (playerSection.style.display === 'none') {
-    playerSection.style.display = 'block';
+  fsPlayer.src = previewUrl;
+
+  // طلب ملء الشاشة على الحاوية (أفضل توافقاً)
+  try {
+    if (fsContainer.requestFullscreen) {
+      await fsContainer.requestFullscreen();
+    } else if (fsContainer.webkitRequestFullscreen) {
+      await fsContainer.webkitRequestFullscreen();
+    } else if (fsPlayer.requestFullscreen) {
+      await fsPlayer.requestFullscreen();
+    }
+  } catch (e) {
+    // بعض المتصفحات قد ترفض الطلب؛ في هذه الحالة سيبقى iframe ضمن الصفحة
+    console.warn('لم ينجح الدخول لملء الشاشة:', e);
   }
-  // التمرير للمشغل ليتصدر الشاشة
-  playerSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// إعادة تحميل
+// تنظيف عند الخروج من وضع ملء الشاشة
+function onFsChange() {
+  const isFs = document.fullscreenElement || document.webkitFullscreenElement;
+  if (!isFs) {
+    // تم الخروج من ملء الشاشة — ننظف المصدر لإيقاف التشغيل
+    fsPlayer.src = '';
+  }
+}
+document.addEventListener('fullscreenchange', onFsChange);
+document.addEventListener('webkitfullscreenchange', onFsChange);
+
+// تحديث
 async function refresh() {
   statusMsg.textContent = 'جاري التحميل...';
   try {
@@ -96,6 +112,4 @@ async function refresh() {
 }
 
 refreshBtn.addEventListener('click', refresh);
-
-// تحميل أولي للشبكة فقط (بدون تشغيل تلقائي)
 refresh();
